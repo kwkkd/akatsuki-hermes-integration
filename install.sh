@@ -15,6 +15,7 @@ if [ ! -d "$HERMES_HOME" ]; then
     echo "[1/5] Installing Hermes Agent..."
     mkdir -p "$HERMES_HOME"
     python3 -m venv "$HERMES_HOME/venv"
+    "$HERMES_HOME/venv/bin/python" -m ensurepip --upgrade
     "$HERMES_HOME/venv/bin/python" -m pip install --upgrade pip
     "$HERMES_HOME/venv/bin/python" -m pip install hermes-agent
     echo "      Done."
@@ -22,8 +23,9 @@ else
     echo "[1/5] Hermes Agent found."
 fi
 
-# 2. transformers + torch 설치
+# 2. pip 확인 + transformers 설치
 echo "[2/5] Installing transformers and torch..."
+"$HERMES_HOME/venv/bin/python" -m ensurepip --upgrade 2>/dev/null || true
 "$HERMES_HOME/venv/bin/python" -m pip install transformers torch --quiet
 echo "      Done."
 
