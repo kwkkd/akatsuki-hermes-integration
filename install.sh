@@ -29,6 +29,8 @@ echo "[+] Installing AKATSUKI to $HERMES_HOME"
 
 # 0.5. Download DeepSeek-R1-Distill-Qwen-7B model
 if [ ! -d "$MODEL_DIR" ] || [ "$(ls -1 "$MODEL_DIR" 2>/dev/null | wc -l)" -lt 5 ]; then
+    echo "[+] Installing transformers and torch for model download..."
+    "$HERMES_HOME/venv/bin/python" -m pip install transformers torch --quiet -q
     echo "[+] Downloading DeepSeek-R1-Distill-Qwen-7B (~15GB)..."
     mkdir -p "$MODEL_DIR"
     $PYTHON_EXE -c "

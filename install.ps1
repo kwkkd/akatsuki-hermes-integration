@@ -43,6 +43,8 @@ Write-Host "[+] Installing AKATSUKI to $HermesHome" -ForegroundColor Green
 # --- 0.5. Download DeepSeek-R1-Distill-Qwen-7B model ---
 $ModelDir = Join-Path $HermesHome "models" "DeepSeek-R1-Distill-Qwen-7B"
 if (-not (Test-Path $ModelDir) -or (Get-ChildItem $ModelDir -File).Count -lt 5) {
+    Write-Host "[+] Installing transformers and torch for model download..." -ForegroundColor Yellow
+    & $PythonExe -m pip install transformers torch --quiet -q
     Write-Host "[+] Downloading DeepSeek-R1-Distill-Qwen-7B (~15GB)..." -ForegroundColor Yellow
     $tmpDir = Join-Path $env:TEMP "akatsuki_download"
     New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
