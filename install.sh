@@ -47,6 +47,8 @@ print(f'Model saved: {save_dir}')
 fi
 
 # 1. Copy tool files
+mkdir -p "$TOOL_DIR"
+mkdir -p "$SKILL_DIR/security/akatsuki"
 echo "[*] Copying tools/akatsuki_*.py ..."
 cp "$SCRIPT_DIR/tools/akatsuki_"*.py "$TOOL_DIR/"
 echo "    -> $(ls -1 "$SCRIPT_DIR/tools/akatsuki_"*.py 2>/dev/null | wc -l) tools copied"
