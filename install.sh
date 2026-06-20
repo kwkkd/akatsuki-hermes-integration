@@ -1,93 +1,88 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# AKATSUKI 暁 — Hermes Agent Integration
-# Usage: chmod +x install.sh && ./install.sh
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HERMES_HOME="${HERMES_HOME:-"$HOME/.local/share/hermes/hermes-agent"}"
+PYTHON_EXE="$HERMES_HOME/venv/bin/python"
 
 echo "========================================="
-echo "  AKATSUKI 暁 — Hermes Agent Installer"
+echo "  AKATSUKI 暁 — Full Installer"
 echo "========================================="
 echo ""
 
-# 0. Install Hermes Agent if missing
+# 1. Hermes Agent 설치
 if [ ! -d "$HERMES_HOME" ]; then
-    echo "[+] Installing Hermes Agent..."
+    echo "[1/5] Installing Hermes Agent..."
     mkdir -p "$HERMES_HOME"
     python3 -m venv "$HERMES_HOME/venv"
     "$HERMES_HOME/venv/bin/python" -m pip install --upgrade pip
     "$HERMES_HOME/venv/bin/python" -m pip install hermes-agent
-    echo "[+] Hermes Agent installed."
+    echo "      Done."
 else
-    echo "[.] Hermes Agent found at $HERMES_HOME"
+    echo "[1/5] Hermes Agent found."
 fi
 
-PYTHON_EXE="$HERMES_HOME/venv/bin/python"
+# 2. transformers + torch 설치
+echo "[2/5] Installing transformers and torch..."
+"$HERMES_HOME/venv/bin/python" -m pip install transformers torch --quiet
+echo "      Done."
 
-# 1. Create directories
-echo ""
-echo "[+] Creating directories..."
+# 3. 모델 다운로드
+MODEL_DIR="$HERMES_HOME/models/DeepSeek-R1-Distill-Qwen-7B"
+if [ ! -d "$MODEL_DIR" ] || [ "$(ls -1 "$MODEL_DIR" 2>/dev/null | wc -l)" -lt 5 ]; then
+    echo "[3/5] Downloading DeepSeek-R1-Distill-Qwen-7B (~15GB)..."
+    mkdir -p "$MODEL_DIR"
+    $PYTHON_EXE << 'PYEOF'
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import os
+
+model_id = "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+save_dir = os.environ.get("MODEL_DIR", "downloaded_model")
+
+print("  [1/2] Downloading tokenizer...")
+AutoTokenizer.from_pretrained(model_id, trust_remote_code=True).save_pretrained(save_dir)
+
+print("  [2/2] Downloading model weights...")
+AutoModelForCausalLM.from_pretrained(
+    model_id, torch_dtype="auto", device_map="auto", trust_remote_code=True
+).save_pretrained(save_dir, safe_serialization=True)
+
+print(f"  Model saved: {save_dir}")
+PYEOF
+    echo "      Done."
+else
+    echo "[3/5] Model already exists."
+fi
+
+# 4. 도구 + 스킬 복사
+echo "[4/5] Copying AKATSUKI tools and skills..."
 mkdir -p "$HERMES_HOME/tools"
 mkdir -p "$HERMES_HOME/skills/security/akatsuki"
-mkdir -p "$HERMES_HOME/models"
-echo "    Done."
-
-# 2. Copy tool files
-echo ""
-echo "[+] Copying AKATSUKI tools..."
 cp "$SCRIPT_DIR/tools/akatsuki_"*.py "$HERMES_HOME/tools/" 2>/dev/null || true
-TOOL_COUNT=$(ls -1 "$SCRIPT_DIR/tools/akatsuki_"*.py 2>/dev/null | wc -l)
-echo "    Copied $TOOL_COUNT tools."
+cp -r "$SCRIPT_DIR/skills/security/akatsuki" "$HERMES_HOME/skills/security/"
+echo "      Done."
 
-# 3. Copy skills
-echo ""
-echo "[+] Copying AKATSUKI skills..."
-cp -r "$SCRIPT_DIR/skills/security/akatsuki" "$HERMES_HOME/skills/security/" 2>/dev/null || true
-echo "    Done."
+# 5. Hermes 설정 패치
+echo "[5/5] Patching Hermes configuration..."
 
-# 4. Patch Hermes files
-echo ""
-echo "[+] Patching Hermes configuration files..."
-
-# toolsets.py
 if [ -f "$HERMES_HOME/toolsets.py" ] && ! grep -q "akatsuki" "$HERMES_HOME/toolsets.py" 2>/dev/null; then
-    sed -i '/"computer_use",/a\    # AKATSUKI Red Team\n    "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",\n    "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",\n    "akatsuki_chain", "akatsuki_report",' "$HERMES_HOME/toolsets.py"
-    echo "    toolsets.py patched."
-else
-    echo "    toolsets.py: already patched or not found."
+    sed -i '/"computer_use",/a\    "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",\n    "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",\n    "akatsuki_chain", "akatsuki_report",' "$HERMES_HOME/toolsets.py"
 fi
 
-# commands.py
 if [ -f "$HERMES_HOME/hermes_cli/commands.py" ] && ! grep -q "akatsuki" "$HERMES_HOME/hermes_cli/commands.py" 2>/dev/null; then
     sed -i '/"bundles",/i\    CommandDef("akatsuki", "AKATSUKI Red Team Ops", "Tools & Skills", args_hint="<dept|recon|payload|evade|c2|vuln|chain|report|list> [args...]", subcommands=("dept", "recon", "payload", "evade", "c2", "vuln", "chain", "report", "list")),' "$HERMES_HOME/hermes_cli/commands.py"
-    echo "    commands.py patched."
-else
-    echo "    commands.py: already patched or not found."
 fi
 
-# cli.py
 if [ -f "$HERMES_HOME/cli.py" ] && ! grep -q "akatsuki" "$HERMES_HOME/cli.py" 2>/dev/null; then
     sed -i '/self._handle_kanban_command/a\        elif canonical == "akatsuki":\n            self._handle_akatsuki_command(cmd_original)' "$HERMES_HOME/cli.py"
-    echo "    cli.py patched."
-else
-    echo "    cli.py: already patched or not found."
 fi
+
+echo "      Done."
 
 echo ""
 echo "========================================="
-echo "  Installation complete!"
+echo "  Complete!"
 echo "========================================="
 echo ""
-echo "Next steps:"
-echo "  1. Download the model (optional, ~15GB):"
-echo "     $PYTHON_EXE $SCRIPT_DIR/download_model.py"
-echo ""
-echo "  2. Run Hermes:"
-echo "     hermes"
-echo ""
-echo "  3. Use AKATSUKI:"
-echo "     /akatsuki list"
-echo "     /akatsuki recon example.com"
-echo "     /akatsuki chain execute target"
+echo "  hermes"
+echo "  /akatsuki list"
