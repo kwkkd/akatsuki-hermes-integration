@@ -29,7 +29,7 @@ if ! "$HERMES_HOME/venv/bin/python" -m pip --version >/dev/null 2>&1; then
     echo "      pip not found, installing..."
     curl -sS https://bootstrap.pypa.io/get-pip.py | "$HERMES_HOME/venv/bin/python"
 fi
-"$HERMES_HOME/venv/bin/python" -m pip install --upgrade pip
+"$HERMES_HOME/venv/bin/python" -m pip install --upgrade pip --trusted-host pypi.org --trusted-host files.pythonhosted.org
 "$HERMES_HOME/venv/bin/python" -m pip install transformers torch --trusted-host pypi.org --trusted-host files.pythonhosted.org
 echo "      Done."
 
