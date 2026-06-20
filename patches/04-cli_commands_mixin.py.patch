@@ -1,0 +1,28 @@
+# hermes_cli/cli_commands_mixin.py — _handle_akatsuki_command 메서드 추가
+#
+# _handle_voice_command 메서드 다음에 아래 코드를 추가:
+#
+#     def _handle_akatsuki_command(self, command):
+#         \"\"\"Handle /akatsuki subcommands.\"\"\"
+#         from cli import _cprint
+#         parts = command.strip().split(maxsplit=2)
+#         if len(parts) < 2:
+#             _cprint("Usage: /akatsuki <dept|recon|payload|evade|c2|vuln|chain|report|list> [args...]")
+#             return
+#         sub = parts[1].lower().strip()
+#         args = parts[2] if len(parts) > 2 else ""
+#         if sub == "list":
+#             from tools.registry import registry
+#             tools = registry.get_tool_names_for_toolset("akatsuki")
+#             _cprint(f"Akatsuki tools available ({len(tools)}):")
+#             for t in tools:
+#                 entry = registry.get_entry(t)
+#                 if entry:
+#                     _cprint(f"  /akatsuki {t.replace('akatsuki_', '')} - {entry.description[:80]}")
+#         elif sub == "dept":
+#             # consult a department
+#             ...
+#         elif sub == "recon":
+#             # OSINT recon
+#             ...
+#         # (전체 구현은 install.ps1 / install.sh 참조)

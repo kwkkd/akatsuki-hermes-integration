@@ -1,0 +1,9 @@
+# hermes_cli/commands.py — COMMAND_REGISTRY에 추가
+#
+# (기존 bundles CommandDef 다음에 추가)
+#
+#    CommandDef("bundles", "List skill bundles ...", "Tools & Skills"),
+#    CommandDef("akatsuki", "AKATSUKI 暁 - Red Team / Cyber Operations: ...",
+#               "Tools & Skills",
+#               args_hint="<dept|recon|payload|evade|c2|vuln|chain|report|list> [args...]",
+#               subcommands=("dept", "recon", "payload", "evade", "c2", "vuln", "chain", "report", "list", "scan", "op")),

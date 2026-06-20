@@ -1,0 +1,29 @@
+name: "Web Application Full Chain"
+objective: "Full web application penetration test"
+target_type: "web"
+phases:
+  - name: recon
+    stop_on_fail: false
+    tools:
+      - whatweb
+      - nmap
+  - name: scan
+    depends_on: ["recon"]
+    stop_on_fail: false
+    tools:
+      - nuclei
+  - name: exploit
+    depends_on: ["scan"]
+    stop_on_fail: false
+    tools:
+      - sqlmap
+      - nuclei
+  - name: post_exploit
+    depends_on: ["exploit"]
+    stop_on_fail: false
+    tools:
+      - nmap
+  - name: report
+    depends_on: ["post_exploit"]
+    stop_on_fail: false
+    tools: []

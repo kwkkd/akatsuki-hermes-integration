@@ -1,0 +1,17 @@
+name: "CCTV & Physical Access Chain"
+objective: "CCTV and physical security system compromise"
+target_type: "physical"
+phases:
+  - name: recon
+    stop_on_fail: false
+    tools:
+      - nmap
+  - name: exploit
+    depends_on: ["recon"]
+    stop_on_fail: false
+    tools:
+      - nuclei
+  - name: report
+    depends_on: ["exploit"]
+    stop_on_fail: false
+    tools: []

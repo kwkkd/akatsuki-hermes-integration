@@ -1,0 +1,17 @@
+name: "Active Directory Takeover"
+objective: "Full Active Directory domain compromise"
+target_type: "domain"
+phases:
+  - name: recon
+    stop_on_fail: false
+    tools:
+      - nmap
+  - name: exploit
+    depends_on: ["recon"]
+    stop_on_fail: false
+    tools:
+      - crackmapexec
+  - name: post_exploit
+    depends_on: ["exploit"]
+    stop_on_fail: false
+    tools: []
