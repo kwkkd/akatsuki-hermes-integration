@@ -160,6 +160,7 @@ def generate_ds_config():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AKATSUKI Continual Pre-training")
+    parser.add_argument("--model_id", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-7B", help="Base model")
     parser.add_argument("--qlora", action="store_true", help="QLoRA 4-bit mode (single GPU friendly)")
     parser.add_argument("--batch_size", type=int, default=2, help="Per-device batch size")
     parser.add_argument("--lr", type=float, default=5e-5, help="Learning rate")
@@ -169,6 +170,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cfg = PretrainConfig()
+    cfg.base_model = args.model_id
     cfg.qlora = args.qlora
     cfg.batch_size = args.batch_size
     cfg.learning_rate = args.lr
