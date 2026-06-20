@@ -22,6 +22,7 @@ class PretrainConfig:
     use_deepspeed: bool = True
     use_flash_attn: bool = True
     qlora: bool = False
+    use_fp16: bool = False
 
 def continue_pretrain(cfg: PretrainConfig):
     from transformers import (
@@ -108,8 +109,8 @@ def continue_pretrain(cfg: PretrainConfig):
         logging_steps=cfg.logging_steps,
         save_steps=cfg.save_steps,
         save_total_limit=3,
-        bf16=True,
-        fp16=False,
+        bf16=not cfg.use_fp16,
+        fp16=cfg.use_fp16,
         dataloader_num_workers=4,
         report_to="none",
         ddp_find_unused_parameters=False if cfg.use_deepspeed else None,
@@ -165,6 +166,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=2, help="Per-device batch size")
     parser.add_argument("--lr", type=float, default=5e-5, help="Learning rate")
     parser.add_argument("--epochs", type=int, default=1, help="Number of epochs")
+    parser.add_argument("--fp16", action="store_true", help="Use fp16 instead of bf16 (for P100/V100)")
     parser.add_argument("--corpus", type=str, default="corpus/security_corpus.jsonl", help="Corpus path")
     parser.add_argument("--output", type=str, default="pretrained_akatsuki", help="Output directory")
     args = parser.parse_args()
@@ -173,6 +175,7 @@ if __name__ == "__main__":
     cfg.base_model = args.model_id
     cfg.qlora = args.qlora
     cfg.batch_size = args.batch_size
+    cfg.use_fp16 = args.fp16
     cfg.learning_rate = args.lr
     cfg.num_epochs = args.epochs
     cfg.corpus_path = args.corpus
