@@ -6,7 +6,7 @@ model:
   lora_path: "./hacker_ai_model"
   merged_path: "./merged_hacker_ai_model"
   use_4bit: true
-  max_seq_length: 4096
+  max_seq_length: 2048
 
 training:
   num_epochs: 3

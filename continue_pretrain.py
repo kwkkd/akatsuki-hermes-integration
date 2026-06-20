@@ -1,4 +1,4 @@
-import sys, os, json, math, torch
+import sys, os, json, math, torch, argparse
 from pathlib import Path
 from datasets import load_dataset
 from dataclasses import dataclass
@@ -21,6 +21,7 @@ class PretrainConfig:
     logging_steps: int = 10
     use_deepspeed: bool = True
     use_flash_attn: bool = True
+    qlora: bool = False
 
 def continue_pretrain(cfg: PretrainConfig):
     from transformers import (
@@ -34,13 +35,34 @@ def continue_pretrain(cfg: PretrainConfig):
         tokenizer.pad_token = tokenizer.eos_token
 
     attn_impl = "flash_attention_2" if cfg.use_flash_attn else "eager"
-    model = AutoModelForCausalLM.from_pretrained(
-        cfg.base_model,
-        torch_dtype=torch.bfloat16,
-        attn_implementation=attn_impl,
-        device_map="auto" if not cfg.use_deepspeed else None,
-        trust_remote_code=True,
-    )
+    if cfg.qlora:
+        from transformers import BitsAndBytesConfig
+        from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True, bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            cfg.base_model, quantization_config=bnb_config,
+            device_map="auto", torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+        )
+        model = prepare_model_for_kbit_training(model)
+        lora_cfg = LoraConfig(
+            r=16, lora_alpha=32, lora_dropout=0.05,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+            bias="none", task_type="CAUSAL_LM",
+        )
+        model = get_peft_model(model, lora_cfg)
+        model.print_trainable_parameters()
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            cfg.base_model, torch_dtype=torch.bfloat16,
+            attn_implementation=attn_impl,
+            device_map="auto" if not cfg.use_deepspeed else None,
+            trust_remote_code=True,
+        )
     model.gradient_checkpointing_enable()
     model.config.use_cache = False
 
@@ -137,7 +159,23 @@ def generate_ds_config():
     print("Deepspeed config written: ds_config.json")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="AKATSUKI Continual Pre-training")
+    parser.add_argument("--qlora", action="store_true", help="QLoRA 4-bit mode (single GPU friendly)")
+    parser.add_argument("--batch_size", type=int, default=2, help="Per-device batch size")
+    parser.add_argument("--lr", type=float, default=5e-5, help="Learning rate")
+    parser.add_argument("--epochs", type=int, default=1, help="Number of epochs")
+    parser.add_argument("--corpus", type=str, default="corpus/security_corpus.jsonl", help="Corpus path")
+    parser.add_argument("--output", type=str, default="pretrained_akatsuki", help="Output directory")
+    args = parser.parse_args()
+
     cfg = PretrainConfig()
+    cfg.qlora = args.qlora
+    cfg.batch_size = args.batch_size
+    cfg.learning_rate = args.lr
+    cfg.num_epochs = args.epochs
+    cfg.corpus_path = args.corpus
+    cfg.output_dir = args.output
+
     print("=== AKATSUKI Continual Pre-training ===\n")
 
     if not os.path.exists(cfg.corpus_path):
@@ -147,14 +185,15 @@ if __name__ == "__main__":
 
     num_gpus = torch.cuda.device_count()
     print(f"GPUs available: {num_gpus}")
-    if num_gpus < 2:
-        print("Warning: Continual pre-training benefits from 2+ GPUs.")
 
-    if cfg.use_deepspeed and num_gpus >= 2:
+    if cfg.use_deepspeed and num_gpus >= 2 and not cfg.qlora:
         generate_ds_config()
     else:
         cfg.use_deepspeed = False
-        print("Deepspeed disabled (need 2+ GPUs)")
+        if cfg.qlora:
+            print("QLoRA mode: Deepspeed disabled")
+        else:
+            print("Deepspeed disabled (need 2+ GPUs)")
 
     output = continue_pretrain(cfg)
     print(f"\nDone. Model: {output}")

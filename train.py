@@ -1,4 +1,4 @@
-import sys, os, json, torch
+import sys, os, json, torch, argparse
 from datasets import Dataset
 sys.path.insert(0, os.path.dirname(__file__))
 from akatsuki_config import CONFIG
@@ -98,4 +98,8 @@ def train(model_id: str = None, output_dir: str = None):
     merge_and_save()
 
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser(description="AKATSUKI SFT Training")
+    parser.add_argument("--model_id", type=str, default=None, help="Base model path or HF ID")
+    parser.add_argument("--output_dir", type=str, default=None, help="LoRA output directory")
+    args = parser.parse_args()
+    train(model_id=args.model_id, output_dir=args.output_dir)
