@@ -23,9 +23,12 @@ else
     echo "[1/5] Hermes Agent found."
 fi
 
-# 2. pip 확인 + transformers 설치
+# 2. pip 설치 확인 + transformers
 echo "[2/5] Installing transformers and torch..."
-"$HERMES_HOME/venv/bin/python" -m ensurepip --upgrade 2>/dev/null || true
+if ! "$HERMES_HOME/venv/bin/python" -m pip --version >/dev/null 2>&1; then
+    echo "      pip not found, installing..."
+    curl -sS https://bootstrap.pypa.io/get-pip.py | "$HERMES_HOME/venv/bin/python"
+fi
 "$HERMES_HOME/venv/bin/python" -m pip install transformers torch --quiet
 echo "      Done."
 
