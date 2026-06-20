@@ -3,13 +3,13 @@ from datasets import Dataset
 sys.path.insert(0, os.path.dirname(__file__))
 from akatsuki_config import CONFIG
 
-def train():
+def train(model_id: str = None, output_dir: str = None):
     from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, BitsAndBytesConfig
     from trl import SFTTrainer
     from peft import LoraConfig
 
-    model_id = CONFIG.model.id
-    output_dir = CONFIG.model.lora_path
+    model_id = model_id or CONFIG.model.id
+    output_dir = output_dir or CONFIG.model.lora_path
 
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=CONFIG.model.use_4bit,
