@@ -1,0 +1,28 @@
+# AKATSUKI 중앙 설정 파일
+# 우선순위: 환경변수 > YAML 파일 > 기본값
+
+model:
+  id: "Qwen/Qwen2.5-7B-Instruct"
+  lora_path: "./hacker_ai_model"
+  merged_path: "./merged_hacker_ai_model"
+  use_4bit: true
+  max_seq_length: 4096
+
+training:
+  num_epochs: 3
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 0.0002
+  lora_r: 16
+  lora_alpha: 32
+  dpo_beta: 0.1
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  max_tokens: 2048
+  temperature: 0.7
+
+telegram:
+  bot_token_env: "TELEGRAM_BOT_TOKEN"
+  allowed_ids_env: "TELEGRAM_ALLOWED_IDS"
