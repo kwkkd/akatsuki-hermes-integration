@@ -1,117 +1,240 @@
-# AKATSUKI 暁 — Hermes Agent Native Integration
+# 🌙 AKATSUKI 暁 — Hermes Agent Native Integration
 
-**13 multi-agent departments + kill chain engine → as native Hermes Agent tools**
+**13개 해킹 부서 + 킬 체인 엔진 → Hermes Agent v0.16.0+ 100% 네이티브 통합**
 
-> AKATSUKI (あかつき·暁)는 13개 전문 부서로 구성된 레드팀 운영 프레임워크입니다.  
-> 이 통합은 AKATSUKI를 Hermes Agent(v0.16.0)의 네이티브 도구/스킬/퍼스낼리티로 이식합니다.  
-> 별도 MCP 서버, HTTP API, 플러그인 없이 Hermes 자체에 내장됩니다.
+> AKATSUKI (あかつき·暁)는 최정예 APT 해킹 조직을 롤플레이하는 레드팀 운영 프레임워크입니다.  
+> 별도 MCP 서버, HTTP API, 플러그인 없이 **Hermes Agent 자체에 도구/스킬/명령어로 내장**됩니다.
 
 ---
 
-## Structure
+## 🔥 한 줄 요약
 
 ```
-akatsuki-hermes-integration/
-├── tools/                          # Hermes Agent tools (tools/ 디렉토리에 복사)
-│   ├── akatsuki_recon.py           # OSINT 정찰 (DNS, WHOIS, 서브도메인)
-│   ├── akatsuki_payload.py         # 리버스 쉘 생성기
-│   ├── akatsuki_evasion.py         # AMSI 우회, 난독화, 샌드박스 회피
-│   ├── akatsuki_c2.py              # C2 인프라 (Cobalt Strike, nginx, WireGuard, Tor)
-│   ├── akatsuki_vuln.py            # CVE 매핑 (Log4j, Exchange, Fortinet, VMware)
-│   ├── akatsuki_chain.py           # 킬 체인 빌더/실행기 (6단계)
-│   ├── akatsuki_report.py          # 침투 테스트 보고서 (Markdown/PDF)
-│   └── akatsuki_dept.py            # 13개 부서 협업 엔진
-├── skills/                         # Hermes Agent skills (skills/ 디렉토리에 복사)
-│   └── security/akatsuki/
-│       ├── SKILL.md                # 메인 스킬 문서
-│       ├── playbooks/              # 6개 시나리오 플레이북
-│       └── references/             # 팀 명단 + 퍼스낼리티 설정 가이드
-├── patches/                        # 기존 Hermes 파일 변경 내역
-│   ├── 01-toolsets.py.patch
-│   ├── 02-tools_config.py.patch
-│   ├── 03-commands.py.patch
-│   ├── 04-cli_commands_mixin.py.patch
-│   └── 05-cli.py.patch
-├── akatsuki-original/              # 원본 AKATSUKI 독립 실행 파일
-│   └── (team_agents.py, hacker_team.py, recon_engine.py 등)
-├── install.ps1                     # Windows/PowerShell 설치 스크립트
-├── install.sh                      # Linux/macOS 설치 스크립트
-└── README.md
+git clone → .\install.ps1 → hermes → /akatsuki chain execute
 ```
 
-## Quick Install
+설치 스크립트 하나가 **Hermes Agent 설치 + DeepSeek-R1-Distill-Qwen-7B 다운로드 + AKATSUKI 통합**을 전부 자동 처리합니다.
 
-```bash
-# Windows (PowerShell)
+---
+
+## 📦 설치
+
+### Windows (PowerShell)
+```powershell
+git clone https://github.com/kwkkd/akatsuki-hermes-integration.git
+cd akatsuki-hermes-integration
 .\install.ps1
+```
 
-# Linux / macOS
+### Linux / macOS
+```bash
+git clone https://github.com/kwkkd/akatsuki-hermes-integration.git
+cd akatsuki-hermes-integration
 chmod +x install.sh && ./install.sh
 ```
 
-설치 스크립트는:
-1. `tools/akatsuki_*.py` → `$HERMES_HOME/tools/` 복사
-2. `skills/security/akatsuki/` → `$HERMES_HOME/skills/security/akatsuki/` 복사
-3. 기존 Hermes 파일(`toolsets.py`, `tools_config.py`, `commands.py`, `cli.py`, `cli_commands_mixin.py`)에 AKATSUKI 등록 코드를 추가합니다.
+### 설치 과정
 
-## Manual Install (선택)
+| 단계 | 작업 | 설명 | 소요시간 |
+|------|------|------|---------|
+| 1 | Hermes Agent 확인/설치 | 없으면 `pip install hermes-agent` 자동 실행 | ~2분 |
+| 2 | DeepSeek-R1-Distill-Qwen-7B 다운로드 | HuggingFace에서 ~15GB 모델 자동 다운로드 | ~10-20분 |
+| 3 | AKATSUKI 도구 복사 | `tools/akatsuki_*.py` 8개 → Hermes `tools/` | 즉시 |
+| 4 | AKATSUKI 스킬 복사 | `skills/security/akatsuki/` → Hermes `skills/` | 즉시 |
+| 5 | Hermes 설정 패치 | toolsets.py, commands.py, cli.py 등 6개 파일 자동 수정 | 즉시 |
 
-### 1. 툴 파일 복사
+> **선택 사항:**  
+> - 모델 다운로드를 건너뛰려면 `.\install.ps1 --no-model`  
+> - Hermes Agent가 이미 있으면 1단계 스킵
+
+---
+
+## 🚀 사용법
+
+### Hermes CLI 실행
 ```bash
-cp tools/akatsuki_*.py /path/to/hermes-agent/tools/
-```
-
-### 2. 스킬 복사
-```bash
-cp -r skills/security/akatsuki /path/to/hermes-agent/skills/security/akatsuki
-```
-
-### 3. 기존 파일 패치
-`patches/` 디렉토리의 각 `.patch` 파일을 참고하여 다음 파일을 수정합니다:
-- `toolsets.py` — `_HERMES_CORE_TOOLS`에 `akatsuki_*` 8개 추가 + `TOOLSETS["akatsuki"]` 정의
-- `hermes_cli/tools_config.py` — `CONFIGURABLE_TOOLSETS`에 akatsuki 추가
-- `hermes_cli/commands.py` — `COMMAND_REGISTRY`에 `/akatsuki` 명령어 추가
-- `cli.py` — `canonical == "akatsuki"` 디스패치 추가
-- `hermes_cli/cli_commands_mixin.py` — `_handle_akatsuki_command()` 메서드 추가
-
-### 4. 퍼스낼리티 등록 (선택)
-`~/.hermes/config.yaml`에 아래 내용을 추가:
-```yaml
-agent:
-  personalities:
-    akatsuki:
-      description: "AKATSUKI 暁 — APT 해킹 조직 AI"
-      system_prompt: "(skills/security/akatsuki/references/personality-config.md 참조)"
-```
-
-## Usage
-
-```bash
-# Hermes CLI 실행
 hermes
-
-# AKATSUKI 명령어
-/akatsuki list                              # 부서 목록
-/akatsuki recon example.com                 # OSINT 정찰
-/akatsuki dept initial_access "침투 계획"     # 부서 상담
-/akatsuki payload bash 10.0.0.1 4444        # 페이로드 생성
-/akatsuki evade amsi_bypass                 # AMSI 우회 코드
-/akatsuki c2 all 51.15.xx.xx                # C2 인프라
-/akatsuki vuln "apache httpd" "2.4.49"      # CVE 매핑
-/akatsuki chain execute 192.168.1.1         # 킬 체인 실행
-/akatsuki report target.com pdf             # 보고서 생성
-
-# 퍼스낼리티 (등록 후)
-/personality akatsuki
 ```
 
-## Requirements
+### AKATSUKI 기본 명령어
 
-- **Hermes Agent** v0.16.0+
-- **Python** 3.11+
-- 선택적 의존성: `dnspython`, `python-whois`, `httpx` (recon 도구), `markdown`, `weasyprint` (PDF 보고서)
+```bash
+/akatsuki list                          # 등록된 부서/도구 목록
+/akatsuki recon example.com             # OSINT 정찰 (DNS, WHOIS, 서브도메인)
+/akatsuki dept "initial_access" "침투"   # 특정 부서 상담
+/akatsuki payload bash 10.0.0.1 4444    # 리버스 쉘 생성
+/akatsuki evade amsi_bypass             # AMSI/EDR 우회 코드
+/akatsuki c2 all 51.15.xx.xx            # C2 인프라 구축
+/akatsuki vuln "apache" "2.4.49"        # CVE 취약점 매핑
+/akatsuki chain "web_full" "target"     # 킬 체인 실행
+/akatsuki report target.com pdf         # 보고서 생성 (PDF)
+```
 
-## License
+### 사용 예시
 
-AKATSUKI — MIT License  
-Hermes Agent — MIT License (Nous Research)
+```
+You> /akatsuki recon acmecorp.com
+
+AKATSUKI> 
+─── Ocean of Knowledge (Konan) ───
+Target: acmecorp.com
+
+[+] DNS Records
+  A: 203.0.113.42 (AWS us-east-1)
+  MX: aspmx2.googlemail.com (Google Workspace)
+
+[+] Subdomains (23 found)
+  dev.acmecorp.com → 203.0.113.50 (Jenkins)
+  vpn.acmecorp.com → 203.0.113.55 (Palo Alto)
+  mail.acmecorp.com → 203.0.113.60 (Exchange)
+
+[+] Technology Stack
+  Web: CloudFront → Tomcat 9.0.68
+  VPN: GlobalProtect portal
+  Mail: Google Workspace
+```
+
+---
+
+## 🏗 아키텍처
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Hermes Agent v0.16+                   │
+│  ┌────────────┐  ┌────────────┐  ┌───────────────────┐  │
+│  │ CLI (/akatsuki) │  │ tools/     │  │ skills/          │  │
+│  │ commands.py │  │ akatsuki_*.py │  │ security/akatsuki │  │
+│  │ dispatch    │  │ (8 tools)  │  │ playbooks+refs  │  │
+│  └────────────┘  └────────────┘  └───────────────────┘  │
+│                        │                                    │
+│         ┌──────────────┴──────────────┐                    │
+│         │      LLM (설정된 모델)         │                    │
+│         │  DeepSeek-R1-Distill-Qwen-7B │                    │
+│         └─────────────────────────────┘                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+**3개 레이어로 내장:**
+1. **명령어 레이어** — `/akatsuki recon`, `/akatsuki chain` 등 11개 서브커맨드
+2. **도구 레이어** — Python 함수 8개 (recon, payload, evasion, c2, vuln, chain, report, dept)
+3. **스킬 레이어** — AKATSUKI 시스템 프롬프트 + 6개 플레이북 + 팀 명단
+
+---
+
+## 🧩 13개 부서 (AKATSUKI Roster)
+
+| 호출명 | 롤 | 전문분야 |
+|--------|-----|---------|
+| `@Pain` | C2 Infrastructure | Mythic, CS, Sliver, PoshC2. CloudFront+Tor |
+| `@Konan` | OSINT / Social Eng | theHarvester, Maltego, Gophish |
+| `@Itachi` | Kernel Rootkits | DKOM, BYOVD, Hyper-V escape |
+| `@Kisame` | DDoS / Network | BGP hijack, DRDoS, Mirai botnet |
+| `@Deidara` | 0-Day Weaponize | Ghidra, WinAFL, MSF Venom |
+| `@Sasori` | Hardware / Firmware | UEFI rootkit, ChipWhisperer, JTAG |
+| `@Kakuzu` | Ransomware | AES-256, Monero mixer, 47s pipeline |
+| `@Hidan` | Data Annihilation | 7-pass DoD, VSS nuke, TRIM |
+| `@Zetsu` | Spy / Dual Identity | BloodHound, SMB worm, Split Recon |
+| `@Tobi` | OPSEC / Evasion | Sandbox detection, 5-stage proxy |
+
+부서 호출 예: `@Konan, acmecorp.com OSINT 리포트 줘` → 헤르메스 LLM이 자동으로 Konan 페르소나로 응답
+
+---
+
+## 🔄 킬 체인 (Kill Chain)
+
+8단계 전체 커버:
+
+```
+Phase 1 - Recon    (@Konan)    → theHarvester, nuclei, dirsearch
+Phase 2 - Weaponize (@Deidara)  → CVE 분석, MSF 모듈, WAF 우회
+Phase 3 - Deliver   (@Konan)    → Gophish 캠페인, drive-by
+Phase 4 - Exploit   (@Deidara)  → SQLi → os-shell, RCE chain
+Phase 5 - C2        (@Pain)     → Mythic listener, CDN fronting
+Phase 6 - Persist   (@Itachi)   → WMI, scheduled task, rootkit
+Phase 7 - Exfil     (@Kakuzu)   → Rclone, AES-256, Mega.nz
+Phase 8 - Cleanup   (@Hidan)    → 로그 삭제, VSS nuke, timestomp
+```
+
+---
+
+## 📋 플레이북 (사전 구성 시나리오)
+
+`skills/security/akatsuki/playbooks/`에 6개 포함:
+
+| 파일 | 시나리오 |
+|------|---------|
+| `web_full_chain.yaml` | 웹 취약점 풀 체인 |
+| `ad_takeover.yaml` | Active Directory 완전 장악 |
+| `cloud_escape.yaml` | AWS/Azure/K8s 컨테이너 탈출 |
+| `ransomware_sim.yaml` | 랜섬웨어 시뮬레이션 |
+| `cctv_chain.yaml` | CCTV/IoT 체인 공격 |
+| `external_pentest.yaml` | 외부 침투 테스트 |
+
+---
+
+## 🧠 모델 (DeepSeek-R1-Distill-Qwen-7B)
+
+AKATSUKI 전용으로 **DeepSeek-R1-Distill-Qwen-7B**를 최적 추천합니다.
+
+| 항목 | 값 |
+|------|-----|
+| 파라미터 | 7B (671B R1의 증류 모델) |
+| 라이선스 | MIT |
+| 한국어 | 우수 (Qwen2.5 토크나이저 기반) |
+| 추론 능력 | R1 수준의 강력한 Chain-of-Thought |
+| VRAM 필요 | 4-bit: ~6GB / FP16: ~14GB |
+
+### 모델 다운로드만 별도로
+```bash
+python download_model.py
+```
+
+### 다른 모델로 변경
+`akatsuki.yaml`의 `model.id` 값을 변경:
+```yaml
+model:
+  id: "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"  # 추천
+  # id: "Qwen/Qwen2.5-7B-Instruct"                # 대안
+  # id: "mistralai/Mistral-7B-Instruct-v0.3"       # 대안
+```
+
+---
+
+## ⚙️ 요구사항
+
+- **Python** 3.11 이상 (Hermes Agent 제약: `>=3.11, <3.14`)
+- **Hermes Agent** v0.16.0 이상 (설치 스크립트가 자동 설치)
+- 선택적 의존성 (설치 스크립트가 자동 설치):
+  - `dnspython`, `python-whois`, `httpx` (recon)
+  - `markdown`, `weasyprint` (PDF 보고서)
+
+---
+
+## ❓ 문제 해결
+
+| 문제 | 해결 |
+|------|------|
+| `Hermes Agent not found` | `install.ps1`이 자동 설치. 수동: `pip install hermes-agent` |
+| `CUDA not available` | CPU 모드로 동작 가능. GPU는 Colab/Kaggle/RunPod 권장 |
+| `Model download failed` | `python download_model.py` 재실행 |
+| `/akatsuki` 명령어 안 됨 | `hermes` 재시작 또는 `install.ps1` 재실행 |
+| `ModuleNotFoundError` | `pip install dnspython python-whois httpx markdown` |
+
+---
+
+## 📁 GitHub
+
+- **저장소:** [kwkkd/akatsuki-hermes-integration](https://github.com/kwkkd/akatsuki-hermes-integration)
+- **원본 AKATSUKI:** `C:\Users\이준혁\Documents\나만에 ai\`
+
+---
+
+## 📜 라이선스
+
+AKATSUKI — **MIT License**  
+Hermes Agent — MIT License (Nous Research)  
+DeepSeek-R1-Distill-Qwen-7B — MIT License (DeepSeek)
+
+---
+
+*"暁(あかつき) — 암흑 속에서 피어오르는 새벽. 우리는 당신의 시스템을 깨우기 위해 왔다."*
