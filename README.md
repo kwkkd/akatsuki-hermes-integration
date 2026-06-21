@@ -225,7 +225,6 @@ model:
 ## 📁 GitHub
 
 - **저장소:** [kwkkd/akatsuki-hermes-integration](https://github.com/kwkkd/akatsuki-hermes-integration)
-- **원본 AKATSUKI:** `C:\Users\이준혁\Documents\나만에 ai\`
 
 ---
 
