@@ -5,3 +5,9 @@ __pycache__/
 Thumbs.db
 *.log
 akatsuki_reports/
+
+# Obsidian bridge
+akatsuki-obsidian/obsidian-plugin/node_modules/
+akatsuki-obsidian/obsidian-plugin/dist/
+.env
+*.local
