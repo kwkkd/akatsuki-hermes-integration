@@ -1,5 +1,7 @@
 # 🌙 AKATSUKI 暁 — Obsidian Bridge (Level 3)
 
+> **⚠️ 이 프로젝트는 재미로 만든 컨셉입니다. 실제 해킹/공격 용도가 아닙니다.**
+
 Hermes Agent + AKATSUKI 13개 부서 ↔ Obsidian vault **양방향 실시간 통합**.
 
 > 별도 HTTP API, MCP 서버, 플러그인 없이 **WebSocket + Unix Socket**으로 Obsidian을 AKATSUKI의 네이티브 스토리지로 만듭니다.
