@@ -10,7 +10,7 @@ venv/
 
 # Obsidian plugin
 obsidian-plugin/node_modules/
-obsidian-plugin/dist/
+obsidian-plugin/dist/*.js.map
 
 # IDE
 .vscode/

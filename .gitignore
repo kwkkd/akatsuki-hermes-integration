@@ -8,6 +8,6 @@ akatsuki_reports/
 
 # Obsidian bridge
 akatsuki-obsidian/obsidian-plugin/node_modules/
-akatsuki-obsidian/obsidian-plugin/dist/
+akatsuki-obsidian/obsidian-plugin/dist/*.js.map
 .env
 *.local
