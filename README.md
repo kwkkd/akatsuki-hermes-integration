@@ -78,7 +78,7 @@ hermes
 
 ```bash
 # 브릿지 시작
-python -m hermes_bridge /path/to/obsidian/vault
+python akatsuki-obsidian/run_bridge.py /path/to/obsidian/vault
 
 # Hermes 내 Obsidian 명령어
 /obsidian list                        # 노트 목록
@@ -332,7 +332,7 @@ akatsuki-hermes-integration/
 ├── skills/security/akatsuki/        # 스킬 + 플레이북 (6개)
 ├── patches/                         # Hermes 패치 파일 (6개)
 ├── akatsuki-obsidian/               # Level 3 Obsidian 브릿지
-│   ├── hermes-bridge/               # Python IPC 서버
+│   ├── hermes_bridge/               # Python IPC 서버
 │   ├── obsidian-plugin/             # Obsidian 플러그인
 │   ├── sync-engine/                 # CRDT 동기화 엔진
 │   ├── schemas/                     # 공유 데이터 계약

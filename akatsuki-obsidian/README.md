@@ -55,7 +55,7 @@ Obsidian Vault → File Watcher → Sync Manager → AgentBridge → WebSocket �
 
 ## 📦 컴포넌트
 
-### 1. Hermes Bridge (`hermes-bridge/`)
+### 1. Hermes Bridge (`hermes_bridge/`)
 Python IPC 서버. Hermes Agent 안에서 실행되며 Obsidian과의 모든 통신을 중개.
 
 | 파일 | 역할 |
@@ -260,7 +260,7 @@ akatsuki-obsidian/
 │   └── crdt.ts                       # CRDT 타입
 ├── proto/
 │   └── ipc.proto                     # Protobuf 명세
-├── hermes-bridge/                    # Python 브릿지
+├── hermes_bridge/                    # Python 브릿지
 │   └── src/
 │       ├── bridge/agent_bridge.py    # 메인 브릿지
 │       ├── ipc/server.py             # Unix Socket
