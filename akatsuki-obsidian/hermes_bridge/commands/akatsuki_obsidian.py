@@ -88,7 +88,7 @@ def _no_bridge_msg() -> str:
 def _get_bridge():
     if not hasattr(_get_bridge, "_instance"):
         try:
-            from ..bridge.agent_bridge import AgentBridge
+            from hermes_bridge.bridge.agent_bridge import AgentBridge
             vault = os.environ.get(
                 "AKATSUKI_VAULT",
                 os.path.expanduser("~/akatsuki-vault"),

@@ -11,20 +11,25 @@ DEFAULT_SOCKET = os.path.expanduser(
 )
 DEFAULT_WS_PORT = 18749
 
+import sys
+
 try:
-    from ..ipc.server import UnixSocketServer
-    HAS_UNIX = True
+    if sys.platform != "win32":
+        from hermes_bridge.ipc.server import UnixSocketServer
+        HAS_UNIX = True
+    else:
+        HAS_UNIX = False
 except Exception:
     HAS_UNIX = False
 
 try:
-    from ..ipc.ws_server import WebSocketServer
+    from hermes_bridge.ipc.ws_server import WebSocketServer
     HAS_WS = True
 except Exception:
     HAS_WS = False
 
-from ..sync.sync_manager import SyncManager
-from ..models.note_model import NoteModel
+from hermes_bridge.sync.sync_manager import SyncManager
+from hermes_bridge.models.note_model import NoteModel
 
 
 class AgentBridge:

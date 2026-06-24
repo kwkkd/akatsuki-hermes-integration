@@ -146,7 +146,9 @@ pip install pyyaml websockets
 
 ```bash
 # 브릿지 시작
-python -m hermes_bridge /path/to/obsidian/vault
+python run_bridge.py /path/to/obsidian/vault
+# 또는
+python run_bridge.py  # AKATSUKI_VAULT 환경변수 사용
 
 # Hermes 실행
 hermes

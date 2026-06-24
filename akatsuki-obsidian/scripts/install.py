@@ -33,7 +33,7 @@ def install_bridge(hermes_dir: Path):
     print(f"Installing bridge to {bridge_dst}")
     if bridge_dst.exists():
         shutil.rmtree(bridge_dst)
-    shutil.copytree(src / "hermes-bridge" / "src", bridge_dst)
+    shutil.copytree(src / "hermes_bridge", bridge_dst)
     shutil.copytree(src / "schemas", schemas_dst)
 
     tool_src = bridge_dst / "commands" / "akatsuki_obsidian.py"

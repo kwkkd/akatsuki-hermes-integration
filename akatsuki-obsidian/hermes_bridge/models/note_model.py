@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import re
 import json
@@ -81,7 +82,7 @@ class NoteModel:
         note.version += 1
         note.modified = int(time.time() * 1000)
         yaml_fm = self._format_frontmatter(note)
-        content = f"---\n{yaml_fm}---\n\n{note.content}"
+        content = f"---\n{yaml_fm}\n---\n\n{note.content}"
         fpath.write_text(content, encoding="utf-8")
         return {"path": note.path, "version": note.version, "checksum": note.checksum}
 
