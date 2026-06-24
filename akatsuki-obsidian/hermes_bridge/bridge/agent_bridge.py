@@ -133,7 +133,7 @@ class AgentBridge:
     async def _handle_delete_note(self, params: dict) -> dict:
         path = params.get("path", "")
         self.notes.delete(path)
-        await self.server.broadcast("note/changed", {"path": path, "action": "delete"})
+        self._broadcast("note/changed", {"path": path, "action": "delete"})
         return {"deleted": True, "path": path}
 
     async def _handle_list_folders(self, params: dict) -> dict:

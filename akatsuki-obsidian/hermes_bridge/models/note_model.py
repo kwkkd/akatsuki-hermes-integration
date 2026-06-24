@@ -63,7 +63,7 @@ class NoteModel:
         return Note(
             id=self._generate_id(fpath),
             path=str(fpath.relative_to(self.vault_path)),
-            title=fpath.stem,
+            title=frontmatter.get("title", fpath.stem),
             content=body,
             tags=frontmatter.get("tags", []),
             links=self._extract_links(body),
@@ -131,6 +131,10 @@ class NoteModel:
             try:
                 content = f.read_text(encoding="utf-8")
                 tags.update(re.findall(r"#(\w+)", content))
+                fm, _ = self._parse_frontmatter(content)
+                fm_tags = fm.get("tags", [])
+                if isinstance(fm_tags, list):
+                    tags.update(fm_tags)
             except Exception:
                 pass
         return sorted(tags)
