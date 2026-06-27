@@ -1,0 +1,35 @@
+name: "ad_takeover"
+description: "Active Directory takeover chain: reconnaissance → enumeration → kerberos attacks → privilege escalation → domain dominance"
+version: "1.0.0"
+phases:
+  - name: "recon"
+    description: "AD reconnaissance"
+    tasks:
+      - name: "nmap_ad"
+        tool: "nmap"
+        args: ["-p", "88,389,445,636,3268,3269", "-sV", "{target}"]
+        timeout: 300
+        retry: 1
+      - name: "akatsuki_dept_adrecon"
+        tool: "akatsuki_dept"
+        args: ["consult", "intel_pr", "Enumerate AD infrastructure on {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "exploit"
+    description: "AD exploitation"
+    depends_on: ["recon"]
+    tasks:
+      - name: "akatsuki_dept_exploit"
+        tool: "akatsuki_dept"
+        args: ["consult", "rnd_exploit", "Exploit AD vulnerabilities (Kerberoast, AS-REP, DCSync) on {target}", ""]
+        timeout: 120
+        retry: 1
+  - name: "persist"
+    description: "Persistence and dominance"
+    depends_on: ["exploit"]
+    tasks:
+      - name: "akatsuki_dept_persist"
+        tool: "akatsuki_dept"
+        args: ["consult", "post_exploit", "Achieve domain dominance and persistent access on {target}", ""]
+        timeout: 60
+        retry: 1

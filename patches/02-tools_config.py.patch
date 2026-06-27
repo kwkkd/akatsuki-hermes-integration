@@ -1,0 +1,12 @@
+# hermes_cli/tools_config.py — 필요한 변경사항
+#
+# 1. CONFIGURABLE_TOOLSETS 목록 끝에 추가:
+#
+#    (기존)
+#    ("computer_use", "🖱️  Computer Use (macOS)", "background desktop control via cua-driver"),
+# ]
+#
+#    (변경)
+#    ("computer_use", "🖱️  Computer Use (macOS)", "background desktop control via cua-driver"),
+#    ("akatsuki", "🌙 AKATSUKI 暁 Cyber Ops", "13 depts, recon, payload, evasion, C2, vuln mapping, kill chain, reports"),
+# ]

@@ -1,0 +1,30 @@
+name: "cctv_chain"
+description: "Surveillance system compromise chain: device discovery → default credential abuse → RTSP hijacking → DVR exploitation"
+version: "1.0.0"
+phases:
+  - name: "discover"
+    description: "Device discovery"
+    tasks:
+      - name: "akatsuki_dept_discover"
+        tool: "akatsuki_dept"
+        args: ["consult", "cctv", "Discover CCTV and surveillance devices on {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "exploit"
+    description: "Device exploitation"
+    depends_on: ["discover"]
+    tasks:
+      - name: "akatsuki_dept_exploit"
+        tool: "akatsuki_dept"
+        args: ["consult", "cctv", "Exploit default credentials and backdoors on {target}", ""]
+        timeout: 120
+        retry: 1
+  - name: "pivot"
+    description: "Network pivot"
+    depends_on: ["exploit"]
+    tasks:
+      - name: "akatsuki_dept_pivot"
+        tool: "akatsuki_dept"
+        args: ["consult", "initial_access", "Pivot from surveillance network to internal network on {target}", ""]
+        timeout: 60
+        retry: 1

@@ -1,0 +1,18 @@
+{
+  "op-1": [
+    {
+      "phase": "recon",
+      "timestamp": 1782483773213,
+      "data": {
+        "target": "x"
+      }
+    },
+    {
+      "phase": "exploit",
+      "timestamp": 1782483773214,
+      "data": {
+        "vuln": "y"
+      }
+    }
+  ]
+}

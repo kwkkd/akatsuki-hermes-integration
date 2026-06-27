@@ -1,0 +1,21 @@
+{
+  "name": "akatsuki-obsidian",
+  "version": "1.0.0",
+  "description": "Hermes Agent bridge for AKATSUKI operations",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "lint": "eslint src/"
+  },
+  "keywords": ["obsidian", "akatsuki", "hermes"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "builtin-modules": "^4.0.0",
+    "esbuild": "^0.20.0",
+    "obsidian": "^1.5.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.4.0"
+  }
+}

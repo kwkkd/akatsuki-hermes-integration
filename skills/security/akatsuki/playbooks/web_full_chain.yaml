@@ -1,0 +1,69 @@
+name: "web_full_chain"
+description: "Full web application penetration test: recon → scan → exploit → post-exploit → report"
+version: "1.0.0"
+phases:
+  - name: "recon"
+    description: "Reconnaissance phase"
+    tasks:
+      - name: "whatweb"
+        tool: "whaweb"
+        args: ["{target}"]
+        timeout: 60
+        retry: 1
+      - name: "nmap_scan"
+        tool: "nmap"
+        args: ["-sV", "-sC", "-p-", "{target}"]
+        timeout: 600
+        retry: 0
+      - name: "akatsuki_recon"
+        tool: "akatsuki_recon"
+        args: ["{target}"]
+        timeout: 120
+        retry: 1
+  - name: "scan"
+    description: "Vulnerability scanning phase"
+    depends_on: ["recon"]
+    tasks:
+      - name: "nuclei_scan"
+        tool: "nuclei"
+        args: ["-u", "http://{target}", "-t", "cves", "-json", "-silent"]
+        timeout: 600
+        retry: 1
+      - name: "akatsuki_vuln"
+        tool: "akatsuki_vuln"
+        args: ["apache httpd", ""]
+        timeout: 30
+        retry: 2
+  - name: "exploit"
+    description: "Exploitation phase"
+    depends_on: ["scan"]
+    tasks:
+      - name: "sqlmap"
+        tool: "sqlmap"
+        args: ["-u", "http://{target}", "--batch", "--level", "3"]
+        timeout: 900
+        retry: 0
+        stop_on_fail: false
+      - name: "akatsuki_payload"
+        tool: "akatsuki_payload"
+        args: ["python", "{target}", "4444"]
+        timeout: 30
+        retry: 1
+  - name: "post_exploit"
+    description: "Post-exploitation phase"
+    depends_on: ["exploit"]
+    tasks:
+      - name: "akatsuki_dept_post"
+        tool: "akatsuki_dept"
+        args: ["consult", "post_exploit", "Maintain access and extract data from {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "report"
+    description: "Reporting phase"
+    depends_on: ["post_exploit"]
+    tasks:
+      - name: "akatsuki_report"
+        tool: "akatsuki_report"
+        args: ["markdown", "{target}", "Web application penetration test"]
+        timeout: 30
+        retry: 1

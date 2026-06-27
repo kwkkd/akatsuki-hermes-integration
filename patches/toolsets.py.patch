@@ -1,0 +1,23 @@
+﻿
+      # Computer use (macOS, gated on cua-driver being installed via check_fn)
+      "computer_use",
+>     # AKATSUKI Red Team / Cyber Operations
+>     "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",
+>     "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",
+>     "akatsuki_chain", "akatsuki_report",
+  ]
+  
+      },
+  
+>     "akatsuki": {
+>         "description": "AKATSUKI ????Red Team / Cyber Operations framework: 13 specialized departments, OSINT reconna
+issance, payload generation, AV/EDR evasion, C2 infrastructure, vulnerability mapping, kill chain execution, and report
+ generation.",
+          "tools": [
+>             "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",
+>             "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",
+>             "akatsuki_chain", "akatsuki_report",
+          ],
+          "includes": []
+
+

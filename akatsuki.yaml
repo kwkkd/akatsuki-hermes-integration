@@ -1,0 +1,127 @@
+model:
+  id: "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+  device_map: "auto"
+  torch_dtype: "auto"
+  trust_remote_code: true
+  max_new_tokens: 4096
+  temperature: 0.7
+  top_p: 0.9
+
+paths:
+  models_dir: "models"
+  vault_dir: "akatsuki-vault"
+  reports_dir: "akatsuki_reports"
+  playbooks_dir: "skills/security/akatsuki/playbooks"
+  sync_state: ".obsidian/akatsuki-sync-state.json"
+
+bridge:
+  ws_host: "127.0.0.1"
+  ws_port: 18749
+  unix_socket: "~/.local/share/hermes/akatsuki-obsidian.sock"
+  auth_token: ""
+  tls_enabled: false
+  tls_cert: ""
+  tls_key: ""
+
+sync:
+  auto_sync: true
+  sync_interval_ms: 5000
+  strategy: "incremental"
+  conflict_resolution: "crdt"
+  max_file_size_mb: 10
+  ignored_patterns:
+    - ".git/**"
+    - ".obsidian/**"
+    - "*.tmp"
+    - "*.swp"
+
+tools:
+  recon:
+    dns_timeout: 5
+    dns_lifetime: 10
+    http_timeout: 10
+    verify_ssl: false
+    subdomain_wordlist: "common"
+  payload:
+    default_lport: 4444
+    encode_by_default: false
+  evasion:
+    default_xor_key: 0x42
+    default_lang: "powershell"
+  c2:
+    default_lport: 443
+    redirector_ports: [443, 8443, 4443, 9443, 8080]
+  vuln:
+    db_path: "data/vuln_db.yaml"
+    auto_update: false
+  chain:
+    default_timeout: 300
+    default_retry: 2
+    stop_on_fail: false
+  report:
+    default_format: "markdown"
+    pdf_engine: "weasyprint"
+
+departments:
+  enabled: true
+  parallel_max_workers: 5
+  collaboration_rounds: 2
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+  file: "akatsuki.log"
+  max_bytes: 10485760
+  backup_count: 5
+
+auth:
+  jwt_secret: "change-this-to-a-random-secret-in-production"
+  token_expiry: 3600
+  require_auth_for_write: true
+  require_auth_for_delete: true
+  users:
+    - username: "admin"
+      password: "akatsuki-admin"
+      role: "admin"
+    - username: "operator"
+      password: "akatsuki-operator"
+      role: "operator"
+    - username: "analyst"
+      password: "akatsuki-analyst"
+      role: "analyst"
+    - username: "viewer"
+      password: "akatsuki-viewer"
+      role: "viewer"
+
+audit:
+  enabled: true
+  log_dir: "logs/audit"
+  log_all_operations: true
+  max_bytes: 10485760
+  backup_count: 5
+
+encryption:
+  enabled: false
+  master_key: ""
+  algorithm: "AES-256-GCM"
+  key_derivation: "PBKDF2-SHA256"
+
+security:
+  allow_shell_execution: false
+  allowed_commands:
+    - "nmap"
+    - "sqlmap"
+    - "nuclei"
+    - "whois"
+    - "dig"
+    - "nslookup"
+    - "curl"
+    - "wget"
+    - "ping"
+    - "traceroute"
+    - "nikto"
+  input_validation: true
+  sanitize_outputs: true
+  rate_limit:
+    enabled: false
+    max_requests_per_minute: 60

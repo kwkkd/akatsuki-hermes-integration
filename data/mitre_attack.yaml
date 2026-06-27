@@ -1,0 +1,98 @@
+reconnaissance:
+  T1595: {name: "Active Scanning", phase: "Reconnaissance", platforms: ["network"]}
+  T1592: {name: "Gather Victim Host Information", phase: "Reconnaissance", platforms: ["network"]}
+  T1589: {name: "Gather Victim Identity Information", phase: "Reconnaissance", platforms: ["email"]}
+  T1590: {name: "Gather Victim Network Information", phase: "Reconnaissance", platforms: ["dns", "network"]}
+  T1591: {name: "Gather Victim Org Information", phase: "Reconnaissance", platforms: ["web"]}
+  T1598: {name: "Phishing for Information", phase: "Reconnaissance", platforms: ["email"]}
+
+resource_development:
+  T1588: {name: "Obtain Capabilities", phase: "Resource Development", platforms: ["code", "exploit"]}
+  T1587: {name: "Develop Capabilities", phase: "Resource Development", platforms: ["code", "exploit"]}
+  T1583: {name: "Acquire Infrastructure", phase: "Resource Development", platforms: ["c2", "domain"]}
+  T1608: {name: "Stage Capabilities", phase: "Resource Development", platforms: ["payload"]}
+
+initial_access:
+  T1190: {name: "Exploit Public-Facing Application", phase: "Initial Access", platforms: ["web", "vpn"]}
+  T1566: {name: "Phishing", phase: "Initial Access", platforms: ["email", "social"]}
+  T1078: {name: "Valid Accounts", phase: "Initial Access", platforms: ["credential"]}
+  T1133: {name: "External Remote Services", phase: "Initial Access", platforms: ["vpn", "rdp"]}
+  T1189: {name: "Drive-by Compromise", phase: "Initial Access", platforms: ["web"]}
+  T1199: {name: "Trusted Relationship", phase: "Initial Access", platforms: ["supplychain"]}
+  T1200: {name: "Hardware Additions", phase: "Initial Access", platforms: ["physical"]}
+
+execution:
+  T1203: {name: "Exploitation for Client Execution", phase: "Execution", platforms: ["office", "browser"]}
+  T1059: {name: "Command and Scripting Interpreter", phase: "Execution", platforms: ["powershell", "bash", "python"]}
+  T1106: {name: "Native API", phase: "Execution", platforms: ["win32", "linux"]}
+  T1569: {name: "System Services", phase: "Execution", platforms: ["service"]}
+  T1072: {name: "Software Deployment Tools", phase: "Execution", platforms: ["sccm", "ansible"]}
+
+persistence:
+  T1547: {name: "Boot or Logon Autostart Execution", phase: "Persistence", platforms: ["registry", "plist"]}
+  T1053: {name: "Scheduled Task/Job", phase: "Persistence", platforms: ["cron", "schtasks"]}
+  T1505: {name: "Server Software Component", phase: "Persistence", platforms: ["web", "dll"]}
+  T1136: {name: "Create Account", phase: "Persistence", platforms: ["local", "domain"]}
+  T1098: {name: "Account Manipulation", phase: "Persistence", platforms: ["azure", "ad"]}
+
+privilege_escalation:
+  T1068: {name: "Exploitation for Privilege Escalation", phase: "Privilege Escalation", platforms: ["kernel", "token"]}
+  T1055: {name: "Process Injection", phase: "Privilege Escalation", platforms: ["dll", "shellcode"]}
+  T1078: {name: "Valid Accounts", phase: "Privilege Escalation", platforms: ["credential"]}
+  T1548: {name: "Abuse Elevation Control Mechanism", phase: "Privilege Escalation", platforms: ["sudo", "uac"]}
+
+defense_evasion:
+  T1562: {name: "Impair Defenses", phase: "Defense Evasion", platforms: ["av", "edr", "firewall"]}
+  T1055: {name: "Process Injection", phase: "Defense Evasion", platforms: ["dll", "shellcode"]}
+  T1070: {name: "Indicator Removal", phase: "Defense Evasion", platforms: ["log", "timestomp"]}
+  T1036: {name: "Masquerading", phase: "Defense Evasion", platforms: ["rename", "icon"]}
+  T1140: {name: "Deobfuscate/Decode Files", phase: "Defense Evasion", platforms: ["payload"]}
+  T1027: {name: "Obfuscated Files or Information", phase: "Defense Evasion", platforms: ["code", "payload"]}
+  T1564: {name: "Hide Artifacts", phase: "Defense Evasion", platforms: ["file", "registry"]}
+
+credential_access:
+  T1003: {name: "OS Credential Dumping", phase: "Credential Access", platforms: ["lsass", "sam"]}
+  T1558: {name: "Steal or Forge Kerberos Tickets", phase: "Credential Access", platforms: ["ad"]}
+  T1110: {name: "Brute Force", phase: "Credential Access", platforms: ["rdp", "ssh", "web"]}
+  T1555: {name: "Credentials from Password Stores", phase: "Credential Access", platforms: ["browser", "vault"]}
+  T1056: {name: "Input Capture", phase: "Credential Access", platforms: ["keylog"]}
+
+discovery:
+  T1046: {name: "Network Service Discovery", phase: "Discovery", platforms: ["nmap", "scan"]}
+  T1082: {name: "System Information Discovery", phase: "Discovery", platforms: ["hostname", "os"]}
+  T1087: {name: "Account Discovery", phase: "Discovery", platforms: ["domain", "local"]}
+  T1069: {name: "Permission Groups Discovery", phase: "Discovery", platforms: ["ad", "local"]}
+  T1018: {name: "Remote System Discovery", phase: "Discovery", platforms: ["network"]}
+
+lateral_movement:
+  T1021: {name: "Remote Services", phase: "Lateral Movement", platforms: ["rdp", "winrm", "ssh"]}
+  T1550: {name: "Use Alternate Authentication Material", phase: "Lateral Movement", platforms: ["passhash", "ticket"]}
+  T1091: {name: "Replication Through Removable Media", phase: "Lateral Movement", platforms: ["usb"]}
+  T1570: {name: "Lateral Tool Transfer", phase: "Lateral Movement", platforms: ["smb", "scp"]}
+
+collection:
+  T1005: {name: "Data from Local System", phase: "Collection", platforms: ["file", "clipboard"]}
+  T1039: {name: "Data from Network Shared Drive", phase: "Collection", platforms: ["smb"]}
+  T1114: {name: "Email Collection", phase: "Collection", platforms: ["exchange", "gmail"]}
+  T1056: {name: "Input Capture", phase: "Collection", platforms: ["keylog", "screen"]}
+
+command_and_control:
+  T1071: {name: "Application Layer Protocol", phase: "C2", platforms: ["http", "dns", "websocket"]}
+  T1573: {name: "Encrypted Channel", phase: "C2", platforms: ["tls", "https"]}
+  T1095: {name: "Non-Application Layer Protocol", phase: "C2", platforms: ["tcp", "udp"]}
+  T1090: {name: "Proxy", phase: "C2", platforms: ["redirector", "socks"]}
+  T1572: {name: "Protocol Tunneling", phase: "C2", platforms: ["dns", "icmp"]}
+  T1008: {name: "Fallback Channels", phase: "C2", platforms: ["multi"]}
+
+exfiltration:
+  T1041: {name: "Exfiltration Over C2 Channel", phase: "Exfiltration", platforms: ["c2"]}
+  T1567: {name: "Exfiltration Over Web Service", phase: "Exfiltration", platforms: ["cloud", "paste"]}
+  T1020: {name: "Automated Exfiltration", phase: "Exfiltration", platforms: ["script"]}
+  T1052: {name: "Exfiltration Over Physical Medium", phase: "Exfiltration", platforms: ["usb"]}
+
+impact:
+  T1486: {name: "Data Encrypted for Impact", phase: "Impact", platforms: ["ransomware"]}
+  T1490: {name: "Inhibit System Recovery", phase: "Impact", platforms: ["backup", "vss"]}
+  T1485: {name: "Data Destruction", phase: "Impact", platforms: ["wipe"]}
+  T1499: {name: "Endpoint Denial of Service", phase: "Impact", platforms: ["ddos"]}
+  T1529: {name: "System Shutdown/Reboot", phase: "Impact", platforms: ["shutdown"]}

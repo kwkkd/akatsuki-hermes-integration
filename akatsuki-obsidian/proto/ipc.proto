@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package akatsuki.ipc.v1;
+
+message RpcMessage {
+  string jsonrpc = 1;
+  oneof body {
+    Request request = 2;
+    Response response = 3;
+    Event event = 4;
+    Error error = 5;
+  }
+}
+
+message Request {
+  string id = 1;
+  string method = 2;
+  bytes params = 3; // JSON-encoded
+}
+
+message Response {
+  string id = 1;
+  bytes result = 2; // JSON-encoded
+  Error error = 3;
+}
+
+message Event {
+  string method = 1;
+  bytes params = 2; // JSON-encoded
+  int64 timestamp = 3;
+  int32 ttl = 4;
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+  bytes data = 3;
+}
+
+message Handshake {
+  string version = 1;
+  string node_id = 2;
+  string capabilities = 3; // JSON array
+  int64 timestamp = 4;
+}
+
+enum TransportType {
+  UNIX_SOCKET = 0;
+  STDIO = 1;
+  TCP = 2;
+  NAMED_PIPE = 3;
+}

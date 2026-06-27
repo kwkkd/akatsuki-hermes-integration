@@ -1,0 +1,29 @@
+# toolsets.py — 필요한 변경사항
+#
+# 1. _HERMES_CORE_TOOLS 목록 끝에 AKATSUKI 도구 추가:
+#
+#    (기존)
+#    "computer_use",
+# ]
+# 
+#    (변경)
+#    "computer_use",
+#    # AKATSUKI Red Team / Cyber Operations
+#    "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",
+#    "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",
+#    "akatsuki_chain", "akatsuki_report",
+# ]
+#
+# 2. TOOLSETS 사전에 akatsuki 툴셋 추가:
+#
+#    (기존 spotify 툴셋 다음, 마지막 } 앞에 추가)
+#
+#    "akatsuki": {
+#        "description": "AKATSUKI - Red Team / Cyber Operations framework: ...",
+#        "tools": [
+#            "akatsuki_dept", "akatsuki_recon", "akatsuki_payload",
+#            "akatsuki_evasion", "akatsuki_c2", "akatsuki_vuln",
+#            "akatsuki_chain", "akatsuki_report",
+#        ],
+#        "includes": []
+#    },

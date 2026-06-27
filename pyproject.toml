@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "akatsuki"
+version = "4.0.0"
+description = "AKATSUKI APT Simulation Toolkit (with built-in chat agent)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "AKATSUKI Team"}]
+keywords = ["security", "red-team", "apt", "penetration-testing", "ai"]
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "httpx>=0.25.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    "dnspython>=2.4.0",
+    "jinja2>=3.1.2",
+    "python-whois>=0.8.0",
+]
+
+[project.optional-dependencies]
+hermes = ["hermes-agent>=0.17.0"]
+training = [
+    "torch>=2.0.0",
+    "transformers>=4.35.0",
+    "accelerate>=0.24.0",
+    "peft>=0.6.0",
+    "trl>=0.7.0",
+    "datasets>=2.14.0",
+    "deepspeed>=0.12.0",
+    "wandb>=0.16.0",
+    "bitsandbytes>=0.41.0",
+]
+webui = ["gradio>=4.0.0"]
+mcp = ["mcp>=1.0.0"]
+telegram = ["python-telegram-bot>=20.0"]
+all = [
+    "hermes-agent>=0.17.0",
+    "torch>=2.0.0", "transformers>=4.35.0", "accelerate>=0.24.0",
+    "peft>=0.6.0", "trl>=0.7.0", "datasets>=2.14.0",
+    "deepspeed>=0.12.0", "wandb>=0.16.0", "gradio>=4.0.0",
+    "mcp>=1.0.0", "python-telegram-bot>=20.0",
+    "bitsandbytes>=0.41.0",
+]
+dev = ["pytest>=7.4.0", "pytest-asyncio>=0.21.0", "ruff>=0.1.0"]
+
+[project.scripts]
+akatsuki = "akatsuki._cli:main"
+akatsuki-api = "akatsuki.api.server:main"
+akatsuki-mcp = "akatsuki.api.mcp:main"
+akatsuki-train = "akatsuki.training.train:main"
+akatsuki-train-dpo = "akatsuki.training.dpo:main"
+akatsuki-train-pretrain = "akatsuki.training.pretrain:main"
+akatsuki-merge = "akatsuki.training.merge:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["akatsuki*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+akatsuki = ["py.typed"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "S101"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+ignore_missing_imports = true

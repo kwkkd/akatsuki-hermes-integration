@@ -1,0 +1,26 @@
+name: Test AKATSUKI Imports
+
+on: [push, pull_request]
+
+jobs:
+  test-imports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test Python syntax
+        run: |
+          python -m py_compile tools/akatsuki_recon.py
+          python -m py_compile tools/akatsuki_payload.py
+          python -m py_compile tools/akatsuki_evasion.py
+          python -m py_compile tools/akatsuki_c2.py
+          python -m py_compile tools/akatsuki_vuln.py
+          python -m py_compile tools/akatsuki_chain.py
+          python -m py_compile tools/akatsuki_report.py
+          python -m py_compile tools/akatsuki_dept.py
+      - name: Check YAML syntax of playbooks
+        run: |
+          python -c "import yaml, glob; [yaml.safe_load(open(f)) for f in glob.glob('skills/security/akatsuki/playbooks/**/SKILL.md')]"

@@ -1,0 +1,57 @@
+name: "ransomware_sim"
+description: "Complete ransomware operation lifecycle: initial access → privilege escalation → lateral movement → encryption → exfiltration → cleanup"
+version: "1.0.0"
+phases:
+  - name: "initial_access"
+    description: "Initial foothold acquisition"
+    tasks:
+      - name: "akatsuki_dept_ia"
+        tool: "akatsuki_dept"
+        args: ["consult", "initial_access", "Gain initial access to {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "escalate"
+    description: "Privilege escalation and persistence"
+    depends_on: ["initial_access"]
+    tasks:
+      - name: "akatsuki_dept_pe"
+        tool: "akatsuki_dept"
+        args: ["consult", "post_exploit", "Escalate privileges to domain admin on {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "c2"
+    description: "C2 infrastructure setup"
+    depends_on: ["escalate"]
+    tasks:
+      - name: "akatsuki_c2"
+        tool: "akatsuki_c2"
+        args: ["cs_profile", "{target}", "443"]
+        timeout: 30
+        retry: 1
+  - name: "encrypt"
+    description: "Encryption phase"
+    depends_on: ["c2"]
+    tasks:
+      - name: "akatsuki_dept_encrypt"
+        tool: "akatsuki_dept"
+        args: ["consult", "rnd_malware", "Deploy ransomware encryption on {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "exfiltrate"
+    description: "Data exfiltration"
+    depends_on: ["encrypt"]
+    tasks:
+      - name: "akatsuki_dept_exfil"
+        tool: "akatsuki_dept"
+        args: ["consult", "finance", "Exfiltrate and monetize data from {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "cleanup"
+    description: "Cleanup and cover tracks"
+    depends_on: ["exfiltrate"]
+    tasks:
+      - name: "akatsuki_dept_cleanup"
+        tool: "akatsuki_dept"
+        args: ["consult", "intel_pr", "Cleanup logs and cover tracks on {target}", ""]
+        timeout: 60
+        retry: 1

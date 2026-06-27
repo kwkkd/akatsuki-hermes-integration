@@ -1,0 +1,39 @@
+name: "cloud_escape"
+description: "Cloud environment escape chain: container breakout → cloud metadata abuse → lateral movement → data exfiltration"
+version: "1.0.0"
+phases:
+  - name: "recon"
+    description: "Cloud environment reconnaissance"
+    tasks:
+      - name: "akatsuki_dept_recon"
+        tool: "akatsuki_dept"
+        args: ["consult", "intel_pr", "Recon cloud infrastructure and identify escape vectors on {target}", ""]
+        timeout: 60
+        retry: 1
+  - name: "breakout"
+    description: "Container/sandbox breakout"
+    depends_on: ["recon"]
+    tasks:
+      - name: "akatsuki_dept_breakout"
+        tool: "akatsuki_dept"
+        args: ["consult", "initial_access", "Break out of container/sandbox on {target}", ""]
+        timeout: 120
+        retry: 1
+  - name: "escalate"
+    description: "Cloud privilege escalation"
+    depends_on: ["breakout"]
+    tasks:
+      - name: "akatsuki_dept_escalate"
+        tool: "akatsuki_dept"
+        args: ["consult", "post_exploit", "Escalate privileges in cloud environment on {target}", ""]
+        timeout: 120
+        retry: 1
+  - name: "exfiltrate"
+    description: "Cloud data exfiltration"
+    depends_on: ["escalate"]
+    tasks:
+      - name: "akatsuki_dept_exfil"
+        tool: "akatsuki_dept"
+        args: ["consult", "infrastructure", "Exfiltrate data from cloud environment on {target}", ""]
+        timeout: 60
+        retry: 1

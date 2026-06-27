@@ -1,0 +1,11 @@
+# cli.py — 디스패치 추가
+#
+# (기존)
+#         elif canonical == "kanban":
+#             self._handle_kanban_command(cmd_original)
+#
+# (변경)
+#         elif canonical == "kanban":
+#             self._handle_kanban_command(cmd_original)
+#         elif canonical == "akatsuki":
+#             self._handle_akatsuki_command(cmd_original)
